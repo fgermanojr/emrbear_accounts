@@ -1,0 +1,23 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: emrbear_accounts_development
+      POSTGRES_PASSWORD: emrbear_accounts
+      POSTGRES_USER: emrbear_accounts
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  web:
+    build: .
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - .:/emrbear_accounts
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+volumes:
+    db_data:
+      driver: local
+# MANUAL: docker-compose exec web rake jobs:work
