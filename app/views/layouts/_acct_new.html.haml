@@ -1,0 +1,9 @@
+= content_for :modal_header do
+  Account Create
+= content_for :modal_body do
+  #acct_create_form
+  = bootstrap_form_for('accounts', url: 'account/create', method: 'post', remote: true) do |f|
+    = f.text_area :account, id: "account", label: "Account:"
+    = f.submit 'Create', class:'right'
+= content_for :modal_footer do
+  emrBear&trade;

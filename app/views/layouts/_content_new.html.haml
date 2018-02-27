@@ -1,0 +1,11 @@
+= content_for :modal_header do
+  User Login
+= content_for :modal_body do
+  #user_login_form
+  = bootstrap_form_tag(url: '/api/user/login', remote: true) do |f|
+    = f.text_field :name, id: "user_name", label: "User Name:"
+    = f.text_field :password, id: "password", label: "Password:"
+    = f.check_box :is_visitor, id: 'visitor', label: "Continue as Visitor"
+    = f.submit 'Login', class:'right'
+= content_for :modal_footer do
+  emrBear&trade;

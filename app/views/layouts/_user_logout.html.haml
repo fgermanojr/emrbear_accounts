@@ -1,0 +1,9 @@
+= content_for :modal_header do
+  User Logout
+= content_for :modal_body do
+  #user_logout_form
+  = bootstrap_form_tag(url: '/api/user/login', remote: true) do |f|
+    = f.text_field :name, id: "user_name", label: "User Name:", value: 'put name here'
+    = f.submit 'Logout', class:'right'
+= content_for :modal_footer do
+  emrBear&trade;

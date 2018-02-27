@@ -1,0 +1,8 @@
+%h3 authenticate login form
+= form_for 'authenticate', url: '/login/update', method: "post", remote: true, autocomplete: "false" do |f|
+  = f.label :email, "Email"
+  = f.text_field :email
+  %br
+  = f.label :token, "Token:"
+  = f.text_field :token
+  = f.submit "Validate"

@@ -1,0 +1,11 @@
+%h3 Users List
+= link_to 'New User', trials_user_create_url, remote: true
+%br
+%br
+-# Sample ruby comment
+- @users.each do |user|
+  = user.name
+  -# = link_to 'Select', user_url(user)
+  -# = link_to 'Edit', edit_user_url(user)
+  %br
+

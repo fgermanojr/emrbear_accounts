@@ -1,0 +1,9 @@
+%h3 authenticate login form
+= form_for 'authenticate', url: '/login', method: "post", autocomplete: "false" do |f|
+  = f.label :email, "Email"
+  = f.text_field :email
+  %br
+  = f.label :password, "Password:"
+  = f.password_field :password
+  %br
+  = f.submit "LoginX"

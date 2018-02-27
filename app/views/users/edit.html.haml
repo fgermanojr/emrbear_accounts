@@ -1,0 +1,24 @@
+%h3 Edit User
+= @interventional_history.form_for @user do |f|
+  Current Name:
+  = @user.name
+  %br
+  = f.label :name, "New Name:"
+  = f.text_field :name
+  %br
+  Current Email:
+  = @user.email
+  %br
+  = f.label :email, "New Email:"
+  = f.text_field :email
+  %br
+  Current Is Email Enabled:
+  = @user.is_email_enabled
+  %br
+  = f.label :is_email_enabled, "New Is Email Enabled:"
+  = f.check_box :is_email_enabled
+  %br
+  = f.submit
+  -if @user.errors.full_messages
+    - @user.errors.full_messages.each do |e|
+      = e

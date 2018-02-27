@@ -1,0 +1,11 @@
+= content_for :modal_header do
+  User Login
+= content_for :modal_body do
+  #user_login_form
+  = bootstrap_form_for('authenticate', url: 'login', method: 'post', remote: true) do |f|
+    = f.text_field :email, id: "email", label: "Email:"
+    = f.password_field :password, id: "password", label: "Password:"
+    = f.check_box :is_visitor, id: 'visitor', label: "Continue as Visitor"
+    = f.submit 'Login', class:'right'
+= content_for :modal_footer do
+  emrBear&trade;

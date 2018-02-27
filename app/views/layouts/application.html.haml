@@ -1,0 +1,84 @@
+!!! 5
+%html
+  %head
+    %title Emrbear Accounts
+    = render partial: "layouts/boilerplate"
+  %body
+    .notice
+      = flash[:notice]
+      - if current_user
+        Signed in as
+        = current_user.name
+        = link_to "Logout", '/logout', 'data-remote': true
+      - elsif session[:is_visitor]
+        = 'Visitor'
+      - else
+        = link_to 'Login', '/login/new', 'data-remote': true
+        = link_to 'Signup', trials_user_create_url, 'data-remote': true
+    %nav{class: "navbar navbar-toggleable-md navbar-light", style: "background-color: #00cc99;"}
+      %button{class: "navbar-toggler navbar-toggler-right", type: "button", 'data-toggle': "collapse", 'data-target': "#navbarNavDropdown", 'aria-controls': "navbarNavDropdown", 'aria-expanded': "false", 'aria-label': "Toggle navigation"}
+        %span{class: "navbar-toggler-icon"}
+      %a{class: "navbar-brand", href: "#"}
+        EMRbear Accounts
+      .collapse.navbar-collapse{id: "navbarNavDropdown"}
+        / mr-auto forces the navbar-text below to the right
+        %ul{class: "navbar-nav mr-auto"}
+          %li{class: "nav-item dropdown"}
+            %a{class: "nav-link dropdown-toggle", href: "http://example.com", id: "navbarDropdownMenuLink", 'data-toggle': "dropdown", 'aria-haspopup': "true", 'aria-expanded': "false"}
+              Users
+            .dropdown-menu{'aria-labelledby': "navbarDropdownMenuLink"}
+              %a{class: "dropdown-item", href: trials_user_create_url, 'data-remote': true }
+                Create
+              %a{class: "dropdown-item", href: users_url}
+                List
+              %a{class: "dropdown-item", href: '/login/new', 'data-remote': true }
+                Login
+              %a{class: "dropdown-item", href: trials_user_verify_url, 'data-remote': true }
+                Verify Token
+              %a{class: "dropdown-item", href: trials_user_logout_url, 'data-remote': true }
+                Logout
+              %a{class: "dropdown-item", href: emails_new_url}
+                Send Email
+          %li{class: "nav-item dropdown"}
+            %a{class: "nav-link dropdown-toggle", href: "http://example.com", id: "navbarDropdownMenuLink", 'data-toggle': "dropdown", 'aria-haspopup': "true", 'aria-expanded': "false"}
+              Accounts
+            .dropdown-menu{'aria-labelledby': "navbarDropdownMenuLink"}
+              %a{class: "dropdown-item", href: '/accounts/new', 'data-remote': true}
+                Create
+              %a{class: "dropdown-item", href: '/accounts', 'data-remote': true}
+                List
+              %a{class: "dropdown-item", href: '/accounts/select', 'data-remote': true}
+                Select
+          %li{class: "nav-item dropdown"}
+            %a{class: "nav-link dropdown-toggle", href: "", id: "navbarDropdownMenuLink", 'data-toggle': "dropdown", 'aria-haspopup': "true", 'aria-expanded': "false"}
+              Content
+            .dropdown-menu{'aria-labelledby': "navbarDropdownMenuLink"}
+              %a{class: "dropdown-item", href: ''}
+                List
+          %li{class: "nav-item dropdown"}
+            %a{class: "nav-link dropdown-toggle", href: "", id: "navbarDropdownMenuLink", 'data-toggle': "dropdown", 'aria-haspopup': "true", 'aria-expanded': "false"}
+              Test
+            .dropdown-menu{'aria-labelledby': "navbarDropdownMenuLink"}
+              %a{class: "dropdown-item", href: trials_user_create_url, 'data-remote': true }
+                User Create
+              %a{class: "dropdown-item", href: trials_user_login_url, 'data-remote': true }
+                User Login
+              %a{class: "dropdown-item", href: trials_user_logout_url, 'data-remote': true }
+                User Logout
+              %a{class: "dropdown-item", href: trials_user_verify_url, 'data-remote': true }
+                User Verify
+              %a{class: "dropdown-item", href: accounts_new_url, 'data-remote': true }
+                Account New
+              %a{class: "dropdown-item", href: accounts_select_url, 'data-remote': true }
+                Account Select
+              %a{class: "dropdown-item", href: contents_new_url, 'data-remote': true }
+                Content New
+        %span{class: "navbar-text"}
+          = session['current_user'].nil? ? '' : session['current_user']['name']
+        %span{class: "navbar-text"}
+          = is_admin? ? ' ADMIN': ''
+        / Multi-Modal, from Wylan
+        #ajax-modal.modal.fade{:tabindex => "-1", :role => 'dialog'}
+          .modal-dialog{role: 'document'}
+            .modal-content
+    = yield

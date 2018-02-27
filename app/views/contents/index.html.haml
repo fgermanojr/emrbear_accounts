@@ -1,0 +1,8 @@
+%h3 Content List
+.container
+  = link_to('New Content', contents_new_url)
+  %br
+  -@contents.each do |content|
+    .row.justify-content-end
+      .col.col-3
+        = content_text
