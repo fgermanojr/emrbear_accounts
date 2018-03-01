@@ -1,16 +1,18 @@
 class UsersController < ApplicationController
   before_action :authorize, except: [:new, :create]
 
-  # def new # Not Used. Form up directly
-  #   @user = User.new
-  # end
+  def new # was trials user_create
+    flash.notice = 'USER CREATE'
+    render_in_modal('views/user_create')
+  end
+
 
   def create # This is user registration
     is_user_already_logged_in
     if ! is_user_already_registered
       new_user = create_new_user
-      establish_session(new_user)
-      flash.notice = "created"
+      establish_session(new_user, false)
+      flash.notice = "Created"
     end
     # Hits views/users/create.js.erb
   end
@@ -45,8 +47,9 @@ class UsersController < ApplicationController
 
   def is_user_already_logged_in
     if session[:user_id]
-      flash.notice = 'User logged in, logout first'
-      # redirect_to root_url and return
+      flash.notice = 'Current user logged out'
+      session[:user_id] = nil
+      @current_user = nil
     end
   end
 

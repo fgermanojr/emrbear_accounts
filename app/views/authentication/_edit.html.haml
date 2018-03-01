@@ -1,0 +1,10 @@
+= content_for :modal_header do
+  Verify Token
+= content_for :modal_body do
+  #verify_token_form
+  = bootstrap_form_for('authenticate', url: '/login/update', remote: true) do |f|
+    = f.text_field :email, id: "email", label: "Email:", value: 'fgermano@earthlink.net'
+    = f.text_field :token, id: "token", label: "Token:"
+    = f.submit 'Verify', class:'right'
+= content_for :modal_footer do
+  emrBear&trade;

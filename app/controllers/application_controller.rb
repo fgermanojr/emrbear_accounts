@@ -3,14 +3,21 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  def current_user  # NEED TO FIX UP FOR VISITOR
-    @current_user ||= User.find(session[:user_id]) if session[:user_id]
+  def current_user  # TBD NEED TO FIX UP FOR VISITOR
+    # @current_user ||= User.find(session[:user_id]) if session[:user_id]
+    User.find(session[:user_id]) if session[:user_id]
   end
   helper_method :current_user # make the controller method available in view
 
+  def current_account
+    # @current_account ||= Account.find(session[:account_id]) if session[:account_id]
+    Account.find(session[:account_id]) if session[:account_id]
+  end
+  helper_method :current_account
+
   def authorize
     return if current_user
-    redirect_to login_new_url
+    flash.notice = "Please Login"
   end
 
   def establish_session(new_user, is_visitor)
@@ -33,5 +40,4 @@ class ApplicationController < ActionController::Base
   def render_in_modal(partial, args={})
     render template: 'layouts/ajax_modal', locals: {partial: partial, args: args}, formats: [:js]
   end
-  # helper_method :render_in_modal   # FGJ Do I need this? I don;t think so
 end

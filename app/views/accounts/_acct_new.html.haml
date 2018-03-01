@@ -3,7 +3,7 @@
 = content_for :modal_body do
   #acct_create_form
   = bootstrap_form_for('account', url: 'accounts/create', method: 'post', remote: true) do |f|
-    = f.text_field :name, id: "name", label: "Account Name:"
+    = f.text_area :name, id: "name", label: "Account Name:"
     = f.submit 'Create', class:'right'
 = content_for :modal_footer do
   emrBear&trade;

@@ -13,3 +13,11 @@
 //= require rails-ujs
 //= require turbolinks
 //= require_tree .
+
+// Turn this on once I resolve the login vs update===verify modal transition problem
+// $(document).on('turbolinks:load', function() {
+//   $('#ajax-modal').on('hidden.bs.modal', function (e) {
+//     $('#ajax-modal .modal-content').html('');
+//     $('#ajax-modal .modal-content').attr('class', 'modal-content');
+//   });
+// });

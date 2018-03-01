@@ -2,8 +2,8 @@
   Account Context
 = content_for :modal_body do
   #acct_select_form
-  = bootstrap_form_tag(url: 'account/select', remote: true) do |f|
-    = f.select :account, Account.all.collect { |a| [ a.name, a.id ] }, id: "account", label: "Account:"
+  = bootstrap_form_for('account', url: 'accounts/selected', remote: true) do |f|
+    = f.select :account, Account.all.collect { |a| [ a.name, a.id ] }, id: "account_id", label: "Account:"
     = f.submit 'Set', class:'right'
 = content_for :modal_footer do
   emrBear&trade;

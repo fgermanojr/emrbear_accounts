@@ -1,2 +1,6 @@
 console.log('login.js.erb');
 $("#ajax-modal").modal('hide');
+$("#ajax-modal .modal-content").html('<%= j(render partial: 'authentication/edit', locals: {}, layout: "layouts/ajax_modal") %>');
+$("#ajax-modal").modal('show');
+$(".notice").html("<%= flash[:notice] %>");
+$("#current_user").html("<%= current_user_display %>");

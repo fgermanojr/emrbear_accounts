@@ -3,28 +3,35 @@ class AuthenticationController < ApplicationController
   require 'securerandom'
   include MyHelpers
 
-  # def new
-  #   # puts up login form
-  # end
+  def new # login form
+    flash.notice = 'USER LOGIN'
+    render_in_modal('authentication/new')
+  end
 
   def login # process login
     user = check_user_exists
     verify_password(user)
   end
 
-  # def edit
-  #   # puts up token form
-  # end
+  def edit # token verify form
+    flash.notice = 'authentication edit'
+    render_in_modal('authentication/edit')
+  end
 
   def update # validate token   # renamed to verify
     user = check_user_exists  # token is stored with user
-    flash.notice = "UPDATE"
     validate_entered_token(user, authentication_params[:token])
+    flash.notice = "LOGGED IN"
+  end
+
+  def logout_form # logout form
+    render_in_modal('authentication/logout_form')
   end
 
   def logout
-    flash.notice = "LOGGED OUT"
+    @current_user = nil
     reset_session
+    flash.notice = "LOGGED OUT"
   end
 
   private
@@ -65,10 +72,7 @@ class AuthenticationController < ApplicationController
     token = generate_token
     preserve_token(user, token)
     if send_token_via_email(user, token)
-      # THIS NEEDS WORK
-      # back around to allow user to enter token into token verify form
-      # NEED TO TAKE FIRST ONE DOWN before this
-      # render_in_modal('layouts/user_verify')
+
     else
       flash.notice = 'Token email send failed'
     end
@@ -93,8 +97,8 @@ class AuthenticationController < ApplicationController
   end
 
   def send_token_via_email(user, token)
-    from = 'fgermano@earthlink.net'
-    to = user.email
+    from = 'fgermano@earthlink.net' # In production, this would be admin@emrbear.com, etc.
+    to = [user.email]
     subject = 'Emrbear Accounts Login Token Validation'
     msg = " Please enter token #{token} to complete login"
     send_mail_delayed(from, to, subject, msg)  # XXX Does this rtn true on success ??

@@ -2,9 +2,9 @@
   Account Invite
 = content_for :modal_body do
   #acct_invite_form
-  = bootstrap_form_tag(url: 'account/verify', remote: true) do |f|
-    = f.select :user, User.all.collect { |u| [ u.name, u.id ] }, id: "user", label: "User:"
-    = f.select :account, Account.all.collect { |a| [ a.name, a.id ] }, id: "account", label: "Account:"
+  = bootstrap_form_for('account', url: 'accounts/invited', remote: true) do |f|
+    = f.select :user, User.all.collect { |u| [ u.name, u.id ] }, id: "user_id", label: "User:"
+    = f.select :account, Account.all.collect { |a| [ a.name, a.id ] }, id: "account_id", label: "Account:"
     = f.submit 'Invite', class:'right'
 = content_for :modal_footer do
   emrBear&trade;

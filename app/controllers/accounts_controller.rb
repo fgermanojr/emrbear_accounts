@@ -1,13 +1,23 @@
 class AccountsController < ApplicationController
   before_action :authorize
+  # after_action { flash.discard if request.xhr? }, only: :create, :invited, :selected
 
   def new
     render_in_modal('accounts/acct_new')
   end
 
   def create
-    if Account.create(accounts_params)
+    user = current_user
+    if (account = Account.create(accounts_params))
       flash.notice = 'Acct Saved'
+      if Relationship.create(user_id: user.id,
+                             relationship_type: 'owner',
+                             account_id: account.id)
+        session[:account_id] = account.id
+        flash.notice = 'Relationship saved'
+      else
+        flash.notice = 'Relationship save failed'
+      end
     else
       flash.notice = 'Acct Save Failed'
     end
@@ -19,14 +29,28 @@ class AccountsController < ApplicationController
     render_in_modal('accounts/acct_invite')
   end
 
-  # invite action, invited
+  def invited
+    user_id = accounts_params[:user]
+    account_id = accounts_params[:account]
+    if Relationship.create(user_id: user_id,
+                           relationship_type: 'member',
+                           account_id: account_id)
+      session[:account_id] = accounts_params[:account_id]
+      flash.notice = 'member Relationship saved'
+    else
+      flash.notice = 'member Relationship save failed'
+    end
+  end
 
   def select
     @accounts = Account.all
     render_in_modal('accounts/acct_select')
   end
 
-  # select action, selected
+  def selected
+    flash.notice = "selected account"
+    session[:account_id] = accounts_params[:account_id]
+  end
 
   def index
     @accounts = Account.all
@@ -35,6 +59,6 @@ class AccountsController < ApplicationController
   private
 
   def accounts_params
-    params.require(:account).permit(:name)
+    params.require(:account).permit(:name, :account, :user)
   end
 end

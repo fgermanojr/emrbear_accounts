@@ -1,0 +1,11 @@
+= content_for :modal_header do
+  Post Content
+= content_for :modal_body do
+  #content_post_form
+  = bootstrap_form_for('content', url: '/contents/create', method: 'post', remote: true) do |f|
+    = f.text_field :user_name, id: "content_user_name", label: "User Name:", readonly: true, value: current_user_display
+    = f.text_field :account_name, id: "content_account_name", label: "Account Name", readonly: true, value: current_account_display
+    = f.text_field :content_text, id: "content_text", label: "Content:"
+    = f.submit 'Post', class:'right'
+= content_for :modal_footer do
+  emrBear&trade;

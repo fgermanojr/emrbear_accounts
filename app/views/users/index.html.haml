@@ -5,6 +5,7 @@
 -# Sample ruby comment
 - @users.each do |user|
   = user.name
+  = '*' if !current_user.nil? && user.name == current_user.name
   -# = link_to 'Select', user_url(user)
   -# = link_to 'Edit', edit_user_url(user)
   %br

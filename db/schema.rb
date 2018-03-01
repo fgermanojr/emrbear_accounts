@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180227161811) do
+ActiveRecord::Schema.define(version: 20180227193547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,14 +43,37 @@ ActiveRecord::Schema.define(version: 20180227161811) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "relationships", force: :cascade do |t|
+  create_table "operations", force: :cascade do |t|
+    t.string "op_controller"
+    t.string "op_action"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["op_controller", "op_action"], name: "index_operations_on_op_controller_and_op_action"
+  end
+
+  create_table "permitteds", id: false, force: :cascade do |t|
+    t.integer "role_id"
+    t.integer "operation_id"
     t.string "type"
+    t.index ["operation_id"], name: "index_permitteds_on_operation_id"
+    t.index ["role_id"], name: "index_permitteds_on_role_id"
+  end
+
+  create_table "relationships", force: :cascade do |t|
+    t.string "relationship_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "account_id"
     t.integer "user_id"
     t.index ["account_id"], name: "index_relationships_on_account_id"
     t.index ["user_id"], name: "index_relationships_on_user_id"
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_roles_on_name"
   end
 
   create_table "users", force: :cascade do |t|
