@@ -1,3 +1,4 @@
-console.log('selected.js.erb');
 $("#ajax-modal").modal('hide');
 $(".notice").html("<%= flash[:notice] %>");
+$("#full_page").html('');
+$("#full_page").replaceWith("<%= j(render template: 'contents/index') %>");

@@ -48,8 +48,10 @@ class AccountsController < ApplicationController
   end
 
   def selected
-    flash.notice = "selected account"
-    session[:account_id] = accounts_params[:account_id]
+    flash.notice = "selected account #{accounts_params[:account]}"
+    session[:account_id] = accounts_params[:account]
+    @contents = Content.where(account_id: accounts_params[:account])
+                       .order(created_at: :desc)
   end
 
   def index

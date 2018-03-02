@@ -1,7 +1,7 @@
 module ApplicationHelper
-  def logged_in_as  # REMOVE
-    current_user.try(:name)
-  end
+  # def logged_in_as  # REMOVE
+  #   current_user.try(:name)
+  # end
 
   def current_account_display
     current_account.nil? ? '' : current_account.name
@@ -12,11 +12,11 @@ module ApplicationHelper
     session[:is_visitor] ? 'Visitor' : display
   end
 
-  def logged_in_as_html  # REMOVE
-    if current_user
-      "Signed in as " + current_user.name
-    elsif session[:is_visitor]
-      'Visitor'
-    end
-  end
+  # def logged_in_as_html  # REMOVE
+  #   if current_user
+  #     "Signed in as " + current_user.name
+  #   elsif session[:is_visitor]
+  #     'Visitor'
+  #   end
+  # end
 end

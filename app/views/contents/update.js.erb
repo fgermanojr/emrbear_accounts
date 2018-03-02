@@ -1,0 +1,4 @@
+console.log('updatejs.erb');
+$("#ajax-modal").modal('hide');
+$(".notice").html("<%= flash[:notice] %>");
+$('<%= "#content_id_#{@content.id}" %>').html("<%= render partial: 'contents/content', locals: {content: @content} %>")

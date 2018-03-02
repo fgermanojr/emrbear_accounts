@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180301223452) do
+ActiveRecord::Schema.define(version: 20180302175115) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20180301223452) do
     t.integer "user_id"
     t.integer "account_id"
     t.integer "relationship_id"
+    t.boolean "private"
     t.index ["relationship_id"], name: "index_contents_on_relationship_id"
     t.index ["user_id", "account_id"], name: "index_contents_on_user_id_and_account_id"
   end
@@ -53,6 +54,7 @@ ActiveRecord::Schema.define(version: 20180301223452) do
     t.string "op_action"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "business_action"
     t.index ["op_controller", "op_action"], name: "index_operations_on_op_controller_and_op_action"
   end
 

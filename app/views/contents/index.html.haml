@@ -1,9 +1,9 @@
-%h3 Content List
-.container
-  = link_to('Post Content', contents_new_url, remote: true)
-  %br
-  #posts_div
-  -@contents.each do |content|
-    .row.justify-content-end
-      .col.col-3
-        = content_text
+#full_page
+  %h3=current_account_display
+  .container
+    = link_to('Post Content', contents_new_url, remote: true)
+    %br
+    %br
+    #contents_div
+    -@contents.each do |content|
+      = render partial: 'contents/content', locals: {content: content}

@@ -34,5 +34,7 @@ Rails.application.routes.draw do
   get '/contents', to: 'contents#index'
   get '/contents/new', to: 'contents#new'
   post '/contents/create', to: 'contents#create'
+  get '/contents/edit', to: 'contents#edit'
+  post '/contents/update', to: 'contents#update'
 
 end

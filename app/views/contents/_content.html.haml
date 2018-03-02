@@ -1,0 +1,17 @@
+.content_div{:id => "content_div_#{content.id}"}
+  .row
+    .col.col-3
+      = content.relationship.user.name
+      %br
+      Posted On:&nbsp;
+      = content.created_at.in_time_zone('MST').strftime('%D %T')
+  .row
+    .col.col-6
+      #content_div.content
+        = content.content_text
+  .row
+    .col.col-6
+      = content.private ? 'PRIVATE' : ''
+      = link_to 'Edit Content', contents_edit_url(content)
+      %br
+      %br

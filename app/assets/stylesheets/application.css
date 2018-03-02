@@ -19,6 +19,11 @@
     border:1px solid black;
   }
 
+  .content {
+    border:1px solid black;
+    background-color: #fff7e6;
+  }
+
   .left {
     float: left; clear: left;
   }
