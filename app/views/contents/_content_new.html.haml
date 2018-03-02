@@ -3,8 +3,9 @@
 = content_for :modal_body do
   #content_post_form
   = bootstrap_form_for('content', url: '/contents/create', method: 'post', remote: true) do |f|
+    = f.hidden_field :content_user_id, id: "content_user_id", value: current_user.id
     = f.text_field :user_name, id: "content_user_name", label: "User Name:", readonly: true, value: current_user_display
-    = f.text_field :account_name, id: "content_account_name", label: "Account Name", readonly: true, value: current_account_display
+    = f.select :account, current_user.accounts.collect { |a| [ a.name, a.id ] }, id: "account_id", label: "Account:"
     = f.text_field :content_text, id: "content_text", label: "Content:"
     = f.submit 'Post', class:'right'
 = content_for :modal_footer do

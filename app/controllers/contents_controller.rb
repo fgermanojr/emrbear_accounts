@@ -7,9 +7,22 @@ class ContentsController < ApplicationController
   end
 
   def create
-
-    flash.notice = 'Content Posted X'
-  # Hits views/contents/create.js.erb
+    @relationship = Relationship.find_by(account_id: contents_params[:account],
+                                    user_id: contents_params[:content_user_id])
+    if @relationship
+      params = {account_id: contents_params[:account],
+                user_id: contents_params[:content_user_id],
+                content_text: contents_params[:content_text],
+                relationship_id: @relationship.id}
+      if (Content.new(params)).save!
+        flash.notice = 'Content Posted'
+      else
+        flash.notice = 'Content Save Failed'
+      end
+    else
+      flash.notice = "Base Relationship doesn't exist for account/user"
+    end
+    # Hits views/contents/create.js.erb
   end
 
   def index
@@ -19,6 +32,7 @@ class ContentsController < ApplicationController
   private
 
   def contents_params
-    params.require(:content).permit(:content_text)
+    params.require(:content).permit(:content_text, :account, :user_name,
+                                    :content_user_name, :content_user_id)
   end
 end

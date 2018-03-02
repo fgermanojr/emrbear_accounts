@@ -1,7 +1,8 @@
 %h3 Content List
 .container
-  = link_to('New Content', contents_new_url)
+  = link_to('Post Content', contents_new_url, remote: true)
   %br
+  #posts_div
   -@contents.each do |content|
     .row.justify-content-end
       .col.col-3
