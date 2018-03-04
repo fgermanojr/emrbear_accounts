@@ -54,7 +54,7 @@
             .dropdown-menu{'aria-labelledby': "navbarDropdownMenuLink"}
               %a{class: "dropdown-item", href: contents_url}
                 List
-              %a{class: "dropdown-item", href: contents_new_url, 'data-remote': true}
+              %a{class: "dropdown-item", href: new_content_url, 'data-remote': true}
                 Post
         %span{class: "navbar-text"}
           = session['current_user'].nil? ? '' : session['current_user']['name']

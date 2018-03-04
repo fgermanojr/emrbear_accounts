@@ -12,6 +12,6 @@
   .row
     .col.col-6
       = content.private ? 'PRIVATE' : ''
-      = link_to 'Edit Content', contents_edit_url(content)
+      = link_to 'Edit Content', edit_content_url(content), remote: true
       %br
       %br

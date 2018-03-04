@@ -1,3 +1,4 @@
 console.log('create.js.erb');
 $("#ajax-modal").modal('hide');
 $(".notice").html("<%= flash[:notice] %>");
+$("#contents_div").prepend("<%= j(render partial: 'contents/content', locals: {content: @content} ) %>")

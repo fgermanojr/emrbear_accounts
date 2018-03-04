@@ -3,7 +3,7 @@ class ContentsController < ApplicationController
 
   def new
     flash.notice = 'POST CONTENT'
-    render_in_modal('contents/content_new.html.haml')
+    render_in_modal('contents/content_new')
   end
 
   def create
@@ -33,11 +33,13 @@ class ContentsController < ApplicationController
 
   def edit
     flash.notice = 'EDIT CONTENT'
-    render_in_modal('contents/content_edit.html.haml')
+    @content = Content.find(params[:id])
+    render_in_modal('contents/content_edit', args: @content)
   end
 
   def update
-
+    puts 'reached update'
+    @content = Content.find(params[:id])
   end
 
   def index

@@ -31,10 +31,13 @@ Rails.application.routes.draw do
 
   get '/accounts', to: 'accounts#index'
 
-  get '/contents', to: 'contents#index'
-  get '/contents/new', to: 'contents#new'
-  post '/contents/create', to: 'contents#create'
-  get '/contents/edit', to: 'contents#edit'
-  post '/contents/update', to: 'contents#update'
+  # NOTE when you change to resource routes, the helpers change names
+  # get '/contents', to: 'contents#index'
+  # get '/contents/new', to: 'contents#new'
+  # post '/contents/create', to: 'contents#create'
+  # get '/contents/edit', to: 'contents#edit'
+  # post '/contents/update', to: 'contents#update'
+
+  resources :contents
 
 end
