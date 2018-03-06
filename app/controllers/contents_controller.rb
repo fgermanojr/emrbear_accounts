@@ -7,14 +7,13 @@ class ContentsController < ApplicationController
   end
 
   def create
-    @relationship = Relationship.find_by(account_id: contents_params[:account],
-                                    user_id: contents_params[:content_user_id])
-    if @relationship
-      params = {account_id: contents_params[:account],
-                user_id: contents_params[:content_user_id],
-                content_text: contents_params[:content_text],
-                private: (contents_params[:content_private] == "1" ? true : false),
-                relationship_id: @relationship.id}
+    context = determine_context(contents_params[:account],
+                                contents_params[:content_user_id],
+                                nil)
+    if role_manager.permitted?(:post_content, context)
+      @relationship = Relationship.find_by(account_id: contents_params[:account],
+                                           user_id: contents_params[:content_user_id])
+      params = set_up_create_params(contents_params, @relationship)
       content = Content.new(params)
       if (content.save)
         @content = Content.find(content.id)
@@ -26,32 +25,57 @@ class ContentsController < ApplicationController
         flash.notice = 'Content Save Failed'
       end
     else
-      flash.notice = "Base Relationship doesn't exist for account/user"
+      flash.notice = "Content operation '#{activity.to_s}' not permitted"
     end
     # Hits views/contents/create.js.erb
   end
 
   def edit
     flash.notice = 'EDIT CONTENT'
-    @content = Content.find(params[:id])
-    render_in_modal('contents/content_edit', args: @content)
+    if is_visitor?
+      flash.notice = "Visitor's can't edit content"
+      return false
+    else
+      # We need to put this form out to get invitee account and then see if editable
+      @content = Content.find(params[:id])
+      if is_content_editable?(@content)
+        render_in_modal('contents/content_edit', args: @content)
+      end
+    end
   end
 
   def update
-    puts 'reached update'
-    @content = Content.find(params[:id])
+    flash.notice = 'UPDATE CONTENT'
+    if is_content_editable?(@content)
+      @content = Content.find(params[:id])
+      update_params = set_up_update_params(contents_params)
+      if @content.update(@content.id, update_params)
+        flash.notice = "Content updated"
+      else
+        flash.notice = "Update save failed"
+      end
+    else
+      # should never hit this unless someone is cheating; is caught at edit action.
+      flash.notice = "Visitor's can't edit content"
+    end
   end
 
   def index
     account_id = session[:account_id]
     if account_id.nil?
       flash.notice = "Set an Account context"
+      # TBD ? CONSIDER PUTTING UP account_select
       @contents = []
     else
-      @contents = Content.where(account_id: account_id).order(created_at: :desc)
+      if is_visitor? # TBD should this go thru role_manager
+        # Visitors cannot see private content.
+        # If they can;t see it they can;t edit it; so they can;t reach directly.
+        # The update checks are a further check against tampering
+        @contents = Content.where(account_id: account_id, private: false).order(created_at: :desc)
+      else
+        @contents = Content.where(account_id: account_id).order(created_at: :desc)
+      end
     end
-    # Need to filter out content that he should not see. RoleManager should do.
-    # will need to filter on a per content basis to exclude private content.
   end
 
   private
@@ -60,5 +84,46 @@ class ContentsController < ApplicationController
     params.require(:content).permit(:content_text, :account, :user_name,
                                     :content_user_name, :content_user_id,
                                     :content_private)
+  end
+
+  def is_content_owner?(content)
+    # Is the current user the owner of the content
+    content.relationship.user_id ==  current_user
+  end
+
+  def set_up_create_params(contents_params, relationship)
+    {
+      account_id: contents_params[:account],
+      user_id: contents_params[:content_user_id],
+      content_text: contents_params[:content_text],
+      private: (contents_params[:content_private] == "1" ? true : false),
+      relationship_id: relationship.id
+    }
+  end
+
+  def set_up_update_params(contents_params)
+    {
+      content_text: contents_params[:content_text],
+      private: (contents_params[:content_private] == "1" ? true : false)
+    }
+  end
+
+  def is_content_editable?(content)
+    user_id = content.relationship.user_id
+    account_id = @content.relationship.account_id
+
+    context = determine_context(account_id, user_id, is_content_owner?(content))
+    if content.private
+      permitted = role_manager.permitted?(:edit_private_content, context)
+      if !permitted
+        flash.notice = "Only owner's of private content can edit it"
+      end
+    else
+      permitted = role_manager.permitted?(:edit_public_content, context)
+      if !permitted
+        flash.notice = "Only creator or invitee of account can edit public content"
+      end
+    end
+    permitted
   end
 end

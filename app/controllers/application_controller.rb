@@ -29,6 +29,10 @@ class ApplicationController < ActionController::Base
     flash.notice = 'Sessioned'
   end
 
+  def establish_account_in_session(account_id)
+    session[:account_id] = account_id
+  end
+
   def is_admin?
     # I am the only admin so we just 'hardwire' this fact
     # If there is no current user, there is no admin, so returns false
@@ -36,8 +40,40 @@ class ApplicationController < ActionController::Base
   end
   helper_method :is_admin?
 
+  def is_visitor?
+    session[:is_visitor].nil? || session[:is_visitor] ? true : false
+  end
+  helper_method :is_visitor?
+
   # Usage: render_in_modal('relative_to_views/some_partial')
   def render_in_modal(partial, args={})
     render template: 'layouts/ajax_modal', locals: {partial: partial, args: args}, formats: [:js]
+  end
+
+  def role_manager
+    @rm ||= RoleManager::RoleManager.new()
+  end
+
+  def determine_context(account_id, user_id, is_content_owner)
+    is_owner = is_member = is_visitor = is_user = nil
+
+    if account_id.present? && user_id.present?
+      @relationship = Relationship.find_by(account_id: account_id, user_id: user_id)
+
+      if @relationship
+        if @relationship.relationship_type == 'owner'
+          is_owner = true
+        elsif @relationship.relationship_type == 'member'
+          is_member = true
+        else
+          fail 'INVALID relationship type'  # should not happen
+        end
+      end
+    end
+    is_user = true if session[:user_id]
+    is_visitor = session[:is_visitor]
+    context = [is_visitor, is_user, is_member, is_owner, is_content_owner]
+    puts context.inspect
+    context
   end
 end

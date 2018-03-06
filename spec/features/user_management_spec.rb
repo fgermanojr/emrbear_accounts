@@ -1,5 +1,7 @@
 require 'rails_helper'
-
+# This is primitive feature test. Need to get a stack work that
+# supports javascript. Understand the different options:
+# poltergeist, chrome, firefox
 RSpec.feature "User management", js: true, :type => :feature do
   scenario "Root page is correct" do
     visit '/'

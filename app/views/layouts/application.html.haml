@@ -7,10 +7,11 @@
     .notice
       = flash[:notice]
     #current_user
+      Current User:
       = current_user_display
     #current_account
       - if current_account
-        Current Account
+        Current Account:
         = current_account.name
     %nav{class: "navbar navbar-toggleable-md navbar-light", style: "background-color: #00cc99;"}
       %button{class: "navbar-toggler navbar-toggler-right", type: "button", 'data-toggle': "collapse", 'data-target': "#navbarNavDropdown", 'aria-controls': "navbarNavDropdown", 'aria-expanded': "false", 'aria-label': "Toggle navigation"}

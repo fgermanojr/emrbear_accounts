@@ -9,7 +9,8 @@
     = f.text_field :account_name, id: "content_account_name", label: "Account Name:", readonly: true, value: current_account_display
     / Fields below are editable
     = f.text_field :content_text, id: "content_text", label: "Content:", value: args.content_text
-    = f.check_box :private, id: "content_private", label: "Private?", value: args.private
+    = f.form_group :private do
+      = f.check_box :private, id: "content_private", label: "Private?", value: args.private
     = f.submit 'Edit', class:'right'
 = content_for :modal_footer do
   emrBear&trade;

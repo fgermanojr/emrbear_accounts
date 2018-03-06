@@ -44,8 +44,8 @@ module RoleManager
     # For actions permitted to all, on could simple NOT put the permitted? before_action.
     # Put permitted? calls in before_action in controllers.
 
-    #   perhaps permit? at first stage with less roles? Does this happen in my world?
-    def permitted?(activity, is_visitor, is_user, is_member_of_acct, is_owner_of_acct, is_owner_of_content)
+    def permitted?(activity, context)
+      is_visitor, is_user, is_member_of_acct, is_owner_of_acct, is_owner_of_content = context
       return true if is_visitor        && permitted_roles_for_action(activity).include?('visitor')
       return true if is_user           && permitted_roles_for_action(activity).include?('user')
       return true if is_member_of_acct && permitted_roles_for_action(activity).include?('member')
@@ -66,7 +66,7 @@ module RoleManager
     end
   end
 
-  class RoleManagerDbms
+  class RoleManagerDbms # This is not complete; it is a future altrnate implementation
     def create_database_representation
       # the action, in the business_action sense, called operations table in the database
       # the action - role representation defined in the class RoleManager is used
@@ -84,8 +84,6 @@ module RoleManager
     def permitted?(activity, is_visitor, is_user, is_member_of_acct, is_owner_of_acct)
       # activity.roles
     end
-
-
 
     # This implementation uses the roles - permitteds - operation database tables
     # in the methods operations are called actions or activities
@@ -124,8 +122,8 @@ end
 # end
 
 # Created helpers to call to set the is_ parameter values from current state.
-# Andres wants scalable, so final effert will be database implementation.
+# Andres wants scalable, so final effort will be database implementation.
 # Redis is possible. Plan for 250 plus actions. The has approach goes to hell.
 # Database makes a lot of sense if you want to overload business roles on top
 # of this and you want to allow dynamic creation of roles (e.g. a person has
-# roles. In the above scheme the roles are "classes".
+# roles.

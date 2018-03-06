@@ -1,6 +1,5 @@
 class AccountsController < ApplicationController
   before_action :authorize
-  # after_action { flash.discard if request.xhr? }, only: :create, :invited, :selected
 
   def new
     render_in_modal('accounts/acct_new')
@@ -26,19 +25,30 @@ class AccountsController < ApplicationController
   def invite
     @accounts = Account.all
     @user = User.find(session[:user_id])
-    render_in_modal('accounts/acct_invite')
+    # We need to render form to get account context.
+    # TBD Should I pass this thru role manager
+    if is_visitor?
+      flash.notice = "Visitors cannot invite others"
+    else
+      render_in_modal('accounts/acct_invite')
+    end
   end
 
   def invited
-    user_id = accounts_params[:user]
-    account_id = accounts_params[:account]
-    if Relationship.create(user_id: user_id,
-                           relationship_type: 'member',
-                           account_id: account_id)
-      session[:account_id] = accounts_params[:account_id]
-      flash.notice = 'member Relationship saved'
+    invitee_user_id = accounts_params[:user]
+    invited_to_account_id = accounts_params[:account]
+
+    if can_current_user_invite_to_account?(current_user, invited_to_account_id)
+      if Relationship.create(user_id: invitee_user_id,
+                             relationship_type: 'member',
+                             account_id: invited_to_account_id)
+        establish_account_in_session(invited_to_account_id)
+        flash.notice = 'Member relationship saved'
+      else
+        flash.notice = 'Member relationship save failed'
+      end
     else
-      flash.notice = 'member Relationship save failed'
+      flash.notice = 'Must be owner of account to Invite members.'
     end
   end
 
@@ -62,5 +72,10 @@ class AccountsController < ApplicationController
 
   def accounts_params
     params.require(:account).permit(:name, :account, :user)
+  end
+
+  def can_current_user_invite_to_account?(user_id, account_id)
+    context = determine_context(account_id, user_id, nil)
+    role_manager.permitted?(:invite_to_account, context)
   end
 end

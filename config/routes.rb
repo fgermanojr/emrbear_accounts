@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
-  root 'contents#index'
+  root 'contents#index' # This is the main page, mostly
 
   get 'users', to: 'users#index'
 
-  get '/users/new', to: 'trials#user_create' # user create form
-  post '/user/create', to: 'users#create'  # creates user
+  get '/users/new', to: 'users#new' # user create form
+  post '/users/create', to: 'users#create'  # creates user
 
   get '/login/new', to: 'authentication#new' # login form
   post '/login', to: 'authentication#login' # process login form
@@ -20,6 +20,8 @@ Rails.application.routes.draw do
 
   get '/trials/some', to: 'trials#some_partial' # test point
 
+  get '/accounts', to: 'accounts#index'
+
   get '/accounts/new', to: 'accounts#new'
   post '/accounts/create', to: 'accounts#create'
 
@@ -29,8 +31,6 @@ Rails.application.routes.draw do
   get '/accounts/invite', to: 'accounts#invite'
   post '/accounts/invited', to: 'accounts#invited'
 
-  get '/accounts', to: 'accounts#index'
-
   # NOTE when you change to resource routes, the helpers change names
   # get '/contents', to: 'contents#index'
   # get '/contents/new', to: 'contents#new'
@@ -39,5 +39,4 @@ Rails.application.routes.draw do
   # post '/contents/update', to: 'contents#update'
 
   resources :contents
-
 end
