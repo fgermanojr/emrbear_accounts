@@ -57,4 +57,12 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods # FGJ
   # config.expect_with(:rspec) { |c| c.syntax = :should } # FGJ
 
+  # FGJ added, is this in a good place?
+  def establish_session(new_user, is_visitor)
+    session[:user_id] = new_user.id
+    session[:name] = new_user.name
+    session[:email] = new_user.email
+    session[:logged_in] = true
+    session[:is_visitor] = true if is_visitor
+  end
 end

@@ -12,7 +12,8 @@ describe "permitted?" do
   let(:rm) {RoleManager::RoleManager.new}
   it "returns true for role is_user and activity :view_public_content" do
     #                  activity, is_visitor, is_user, is_member_of_acct, is_owner_of_acct
-     expect(rm.permitted?(:view_public_content, false, true, false, false)).to be true
+    context = [false, true, false, false, false]
+    expect(rm.permitted?(:view_public_content, context)).to be true
   end
 end
 
@@ -21,6 +22,7 @@ describe "permitted?" do
   it "returns false for role is_user and activity :invite_to_account" do
     #                  activity, is_visitor, is_user, is_member_of_acct, is_owner_of_acct
     # Note the activity is a symbol.
-    expect(rm.permitted?(:invite_to_account, false, true, false, false, false)).to be nil
+    context= [false, true, false, false, false, false]
+    expect(rm.permitted?(:invite_to_account, context)).to be nil
   end
 end

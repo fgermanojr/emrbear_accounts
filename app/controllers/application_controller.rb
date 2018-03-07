@@ -71,9 +71,8 @@ class ApplicationController < ActionController::Base
       end
     end
     is_user = true if session[:user_id]
-    is_visitor = session[:is_visitor]
+    is_visitor = true if session[:is_visitor].nil? || session[is_visitor] == true
     context = [is_visitor, is_user, is_member, is_owner, is_content_owner]
-    puts context.inspect
     context
   end
 end

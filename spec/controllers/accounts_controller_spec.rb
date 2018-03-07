@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe UsersController, type: :controller do
-  render_views # This is optional
+RSpec.describe AccountsController, type: :controller do
+  render_views # This is optional;
 
   # describe "GET #index" do
   #   it "returns http success" do
@@ -42,29 +42,38 @@ RSpec.describe UsersController, type: :controller do
   #   end
   # end
 
-  # TBD move to model
-  describe "test fixture user" do
-    let!(:user_frank) { create(:user, :user_frank) }
+  # TBD move this test to model
+  describe "test fixture account" do
+    let!(:account_master) { create(:account, :account_master) }
     it "has correct name" do
-      expect(user_frank.name).to eql("Frank")
+      expect(account_master.name).to eql("AccountMaster")
     end
   end
 
-  describe "test fixture relationship" do
-    # let!(:user_frank) { create(:user, :user_frank) }
-    # let!(:account_master) { create(:account, :account_master) }
+  # By default, until we log in, we are a visitor.
+  describe "visitor actions" do
     let!(:account_master_user_frank_owner) do
       create(:relationship, :account_master_user_frank_owner)
     end
+    let(:account) { Account.find_by(name: "AccountMaster") }
+    let(:accounts_params) { { account: { account: account } } }
 
-    it "creates relationship" do
-      expect(account_master_user_frank_owner.relationship_type).to eql('owner')
+    it "visitor can't invite" do
+      post :invite, xhr: true, params: accounts_params
+      expect(flash[:notice]).to match(/cannot invite/)
     end
-    it "creates relationship user frank" do
-      expect(account_master_user_frank_owner.user.name).to eql('frank')
+  end
+
+  describe "user actions" do
+    let(:user_fred) {create(:user, :user_fred)}
+    let(:new_account_params) do
+      { account: { name: 'new_account', user: user_fred } }
     end
-    it "creates relationship account AccountMaster" do
-      expect(account_master_user_frank_owner.account.name).to eql('AccountMaster')
+
+    it "user can create new account" do
+      establish_session(user_fred, false)
+      post :create, xhr: true, params: new_account_params
+      expect(flash[:notice]).to match(/Relationship saved/)
     end
   end
 end

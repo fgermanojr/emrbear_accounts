@@ -62,7 +62,7 @@ module RoleManager
       # ROLE_MATRIX.each_with_object([]) do |action_role_k_v, permitted_actions|
       #   permitted_actions << action_role_k_v[0] if action_role_k_v[1].include?(role)
       # end.uniq
-      # Is this clearer ?
+      # Is this clearer ? No
     end
   end
 

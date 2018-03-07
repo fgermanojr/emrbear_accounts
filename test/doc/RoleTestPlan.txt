@@ -1,0 +1,24 @@
+Visitor can't invite to account
+Visitor can't post content to account
+Visitor can't edit content on account
+Visitor can't create account
+Visitor can't see private account (not presented to him)
+Visitor can create user
+
+
+User can't post to account unless owner or member
+User can post to account if owner or member
+
+User can invite to account if owner
+
+User can see private account if member
+User can't see private account if not member
+
+User can create new account
+User can edit public content if owner of content
+User can edit private content if owner of content
+User can't edit public content if not owner of content
+User can't edit private contnt if not owner of content
+
+
+Definitions: visitor unless logged in, when he becomes user

@@ -7,7 +7,7 @@ class AccountsController < ApplicationController
 
   def create
     user = current_user
-    if (account = Account.create(accounts_params))
+    if (account = Account.create(accounts_params.except(:user)))
       flash.notice = 'Acct Saved'
       if Relationship.create(user_id: user.id,
                              relationship_type: 'owner',
@@ -24,12 +24,12 @@ class AccountsController < ApplicationController
 
   def invite
     @accounts = Account.all
-    @user = User.find(session[:user_id])
     # We need to render form to get account context.
     # TBD Should I pass this thru role manager
     if is_visitor?
       flash.notice = "Visitors cannot invite others"
     else
+      @user = User.find(session[:user_id])
       render_in_modal('accounts/acct_invite')
     end
   end
@@ -53,7 +53,8 @@ class AccountsController < ApplicationController
   end
 
   def select
-    @accounts = Account.all
+    @accounts = Account.all # TBD This should be OK;
+    # user / visitor can see all accounts
     render_in_modal('accounts/acct_select')
   end
 

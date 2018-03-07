@@ -3,6 +3,7 @@ class ContentsController < ApplicationController
 
   def new
     flash.notice = 'POST CONTENT'
+    # TBD SHOULD BE permitted? here for visitor
     render_in_modal('contents/content_new')
   end
 
@@ -25,7 +26,9 @@ class ContentsController < ApplicationController
         flash.notice = 'Content Save Failed'
       end
     else
-      flash.notice = "Content operation '#{activity.to_s}' not permitted"
+      @content = nil
+      flash.notice = "Content operation '#{:post_content.to_s}' not permitted"
+      render template: '/layouts/access_denied' and return
     end
     # Hits views/contents/create.js.erb
   end
@@ -34,7 +37,7 @@ class ContentsController < ApplicationController
     flash.notice = 'EDIT CONTENT'
     if is_visitor?
       flash.notice = "Visitor's can't edit content"
-      return false
+      render template: '/layouts/access_denied' and return
     else
       # We need to put this form out to get invitee account and then see if editable
       @content = Content.find(params[:id])
@@ -46,8 +49,13 @@ class ContentsController < ApplicationController
 
   def update
     flash.notice = 'UPDATE CONTENT'
+    @content = Content.find(params[:id])
+    if contents_params[:content_user_id].nil? || contents_params[:content_account_id].nil?
+      flash.notice = "Visitor's can't update content"
+      render template: '/layouts/access_denied' and return
+    end
+
     if is_content_editable?(@content)
-      @content = Content.find(params[:id])
       update_params = set_up_update_params(contents_params)
       if @content.update(@content.id, update_params)
         flash.notice = "Content updated"
@@ -57,6 +65,7 @@ class ContentsController < ApplicationController
     else
       # should never hit this unless someone is cheating; is caught at edit action.
       flash.notice = "Visitor's can't edit content"
+      render template: '/layouts/access_denied' and return
     end
   end
 
@@ -83,7 +92,7 @@ class ContentsController < ApplicationController
   def contents_params
     params.require(:content).permit(:content_text, :account, :user_name,
                                     :content_user_name, :content_user_id,
-                                    :content_private)
+                                    :content_private, :content_account_id)
   end
 
   def is_content_owner?(content)
@@ -110,7 +119,7 @@ class ContentsController < ApplicationController
 
   def is_content_editable?(content)
     user_id = content.relationship.user_id
-    account_id = @content.relationship.account_id
+    account_id = content.relationship.account_id
 
     context = determine_context(account_id, user_id, is_content_owner?(content))
     if content.private
