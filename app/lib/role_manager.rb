@@ -46,10 +46,11 @@ module RoleManager
 
     def permitted?(activity, context)
       is_visitor, is_user, is_member_of_acct, is_owner_of_acct, is_owner_of_content = context
-      return true if is_visitor        && permitted_roles_for_action(activity).include?('visitor')
-      return true if is_user           && permitted_roles_for_action(activity).include?('user')
-      return true if is_member_of_acct && permitted_roles_for_action(activity).include?('member')
-      return true if is_owner_of_acct  && permitted_roles_for_action(activity).include?('owner')
+      return true if is_visitor          && permitted_roles_for_action(activity).include?('visitor')
+      return true if is_user             && permitted_roles_for_action(activity).include?('user')
+      return true if is_member_of_acct   && permitted_roles_for_action(activity).include?('member')
+      return true if is_owner_of_acct    && permitted_roles_for_action(activity).include?('owner')
+      return true if is_owner_of_content && permitted_roles_for_action(activity).include?('my_content')
     end
 
     def permitted_roles_for_action(activity)

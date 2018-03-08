@@ -57,12 +57,18 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods # FGJ
   # config.expect_with(:rspec) { |c| c.syntax = :should } # FGJ
 
-  # FGJ added, is this in a good place?
+  # FGJ added, this is duplicated from appication_controller.can I user directly?
   def establish_session(new_user, is_visitor)
-    session[:user_id] = new_user.id
-    session[:name] = new_user.name
-    session[:email] = new_user.email
-    session[:logged_in] = true
-    session[:is_visitor] = true if is_visitor
+    if is_visitor
+      session[:user_id] = nil
+      session[:name] = nil
+      session[:email] = nil
+      session[:logged_in] = nil
+    else
+      session[:user_id] = new_user.id
+      session[:name] = new_user.name
+      session[:email] = new_user.email
+      session[:logged_in] = true
+    end
   end
 end

@@ -11,19 +11,22 @@ class ContentsController < ApplicationController
     context = determine_context(contents_params[:account],
                                 contents_params[:content_user_id],
                                 nil)
+
     if role_manager.permitted?(:post_content, context)
+      # MOVE @r above if.
       @relationship = Relationship.find_by(account_id: contents_params[:account],
                                            user_id: contents_params[:content_user_id])
+
       params = set_up_create_params(contents_params, @relationship)
       content = Content.new(params)
       if (content.save)
         @content = Content.find(content.id)
         # The render partial will use @content
         puts content.errors.full_messages
-        flash.notice = 'Content Posted'
+        flash.notice = 'Content posted'
       else
         puts content.errors.full_messages
-        flash.notice = 'Content Save Failed'
+        flash.notice = 'Content save failed'
       end
     else
       @content = nil
@@ -50,21 +53,17 @@ class ContentsController < ApplicationController
   def update
     flash.notice = 'UPDATE CONTENT'
     @content = Content.find(params[:id])
-    if contents_params[:content_user_id].nil? || contents_params[:content_account_id].nil?
-      flash.notice = "Visitor's can't update content"
-      render template: '/layouts/access_denied' and return
-    end
 
-    if is_content_editable?(@content)
+    if !is_visitor? && is_content_editable?(@content)
       update_params = set_up_update_params(contents_params)
-      if @content.update(@content.id, update_params)
+      if Content.update(@content.id, update_params)
         flash.notice = "Content updated"
       else
         flash.notice = "Update save failed"
       end
     else
       # should never hit this unless someone is cheating; is caught at edit action.
-      flash.notice = "Visitor's can't edit content"
+      flash.notice = "Only owner's of private content can update" # TBD also not visitors
       render template: '/layouts/access_denied' and return
     end
   end
@@ -95,11 +94,6 @@ class ContentsController < ApplicationController
                                     :content_private, :content_account_id)
   end
 
-  def is_content_owner?(content)
-    # Is the current user the owner of the content
-    content.relationship.user_id ==  current_user
-  end
-
   def set_up_create_params(contents_params, relationship)
     {
       account_id: contents_params[:account],
@@ -117,11 +111,19 @@ class ContentsController < ApplicationController
     }
   end
 
+  def is_content_owner?(content)
+    # Is the current user the owner of the content?
+    return false if current_user.nil? # Visitor can't own any content
+    content.relationship.user_id ==  current_user.id
+  end
+
+
   def is_content_editable?(content)
     user_id = content.relationship.user_id
     account_id = content.relationship.account_id
 
     context = determine_context(account_id, user_id, is_content_owner?(content))
+
     if content.private
       permitted = role_manager.permitted?(:edit_private_content, context)
       if !permitted

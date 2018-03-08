@@ -4,29 +4,32 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def current_user  # TBD NEED TO FIX UP FOR VISITOR
-    # @current_user ||= User.find(session[:user_id]) if session[:user_id]
     User.find(session[:user_id]) if session[:user_id]
   end
   helper_method :current_user # make the controller method available in view
 
   def current_account
-    # @current_account ||= Account.find(session[:account_id]) if session[:account_id]
     Account.find(session[:account_id]) if session[:account_id]
   end
   helper_method :current_account
 
   def authorize
     return if current_user
-    flash.notice = "Please Login"
+    flash.notice = "Login, or continue as Visitor"
   end
 
   def establish_session(new_user, is_visitor)
-    session[:user_id] = new_user.id
-    session[:name] = new_user.name
-    session[:email] = new_user.email
-    session[:logged_in] = true
-    session[:is_visitor] = true if is_visitor
-    flash.notice = 'Sessioned'
+    if is_visitor
+      session[:user_id] = nil
+      session[:name] = nil
+      session[:email] = nil
+      session[:logged_in] = nil
+    else
+      session[:user_id] = new_user.id
+      session[:name] = new_user.name
+      session[:email] = new_user.email
+      session[:logged_in] = true
+    end
   end
 
   def establish_account_in_session(account_id)
@@ -41,7 +44,7 @@ class ApplicationController < ActionController::Base
   helper_method :is_admin?
 
   def is_visitor?
-    session[:is_visitor].nil? || session[:is_visitor] ? true : false
+    session[:user_id].nil?
   end
   helper_method :is_visitor?
 
@@ -56,10 +59,8 @@ class ApplicationController < ActionController::Base
 
   def determine_context(account_id, user_id, is_content_owner)
     is_owner = is_member = is_visitor = is_user = nil
-
     if account_id.present? && user_id.present?
       @relationship = Relationship.find_by(account_id: account_id, user_id: user_id)
-
       if @relationship
         if @relationship.relationship_type == 'owner'
           is_owner = true
@@ -71,7 +72,7 @@ class ApplicationController < ActionController::Base
       end
     end
     is_user = true if session[:user_id]
-    is_visitor = true if session[:is_visitor].nil? || session[is_visitor] == true
+    is_visitor = true if session[:user_id].nil?
     context = [is_visitor, is_user, is_member, is_owner, is_content_owner]
     context
   end
