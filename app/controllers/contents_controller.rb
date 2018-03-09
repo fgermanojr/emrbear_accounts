@@ -17,7 +17,7 @@ class ContentsController < ApplicationController
                                 nil)
 
     if role_manager.permitted?(:post_content, context)
-      # MOVE @r above if. extend if to include @r, in nil, not owner or member of anything
+      # MOVE @r above if. extend if to include @r, if nil, not owner or member of anything
       @relationship = Relationship.find_by(account_id: contents_params[:account],
                                            user_id: contents_params[:content_user_id])
 
@@ -79,9 +79,9 @@ class ContentsController < ApplicationController
       @contents = []
     else
       if is_visitor? # TBD should this go thru role_manager
-        # Visitors cannot see private content; the display subsystem doesn;t show it.
-        # If they can;t see it they can;t edit it; so they can;t reach directly.
-        # Nevertheless, in update we check
+        # Visitors cannot see private content; the display subsystem doesn't show it.
+        # If they can;t see it they can;t edit it;
+        # Nevertheless, in update we check permissions incase they play with url
         @contents = Content.where(account_id: account_id, private: false).order(created_at: :desc)
       else
         @contents = Content.where(account_id: account_id).order(created_at: :desc)

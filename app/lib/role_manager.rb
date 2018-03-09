@@ -121,10 +121,3 @@ end
 # if permitted?('create_user', is_visitor, is_user, is_member, is_owner)
 #
 # end
-
-# Created helpers to call to set the is_ parameter values from current state.
-# Andres wants scalable, so final effort will be database implementation.
-# Redis is possible. Plan for 250 plus actions. The has approach goes to hell.
-# Database makes a lot of sense if you want to overload business roles on top
-# of this and you want to allow dynamic creation of roles (e.g. a person has
-# roles.

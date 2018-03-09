@@ -1,6 +1,6 @@
 module ApplicationHelper
   def current_account_display
-    current_account.nil? ? '' : current_account.name
+    current_account.nil? ? 'No Current Account' : current_account.name
   end
 
   def current_user_display
@@ -22,5 +22,17 @@ module ApplicationHelper
 
   def is_user_logged_in?(user)
     !current_user.nil? && user.name == current_user.name
+  end
+
+  def annotate_user(user)
+    user_name = user.name
+    user_name += '(current user)' if is_user_logged_in?(user)
+    user_name += ':'
+  end
+
+  def annotate_account(user, account)
+    account_name = account.name
+    account_name += '(owner)' if is_user_account_owner?(user, account)
+    account_name += ','
   end
 end

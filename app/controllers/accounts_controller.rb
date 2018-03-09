@@ -8,7 +8,7 @@ class AccountsController < ApplicationController
   def create
     user = current_user
     if (account = Account.create(accounts_params.except(:user)))
-      flash.notice = 'Acct Saved'
+      flash.notice = 'Account Saved'
       if Relationship.create(user_id: user.id,
                              relationship_type: 'owner',
                              account_id: account.id)
@@ -18,7 +18,7 @@ class AccountsController < ApplicationController
         flash.notice = 'Relationship save failed'
       end
     else
-      flash.notice = 'Acct Save Failed'
+      flash.notice = 'Account Save Failed'
     end
   end
 
@@ -54,7 +54,7 @@ class AccountsController < ApplicationController
   end
 
   def select
-    @accounts = Account.all # TBD This should be OK;
+    @accounts = Account.all
     # user / visitor can see all accounts
     render_in_modal('accounts/acct_select')
   end
