@@ -1,8 +1,4 @@
 module ApplicationHelper
-  # def logged_in_as  # REMOVE
-  #   current_user.try(:name)
-  # end
-
   def current_account_display
     current_account.nil? ? '' : current_account.name
   end
@@ -12,11 +8,19 @@ module ApplicationHelper
     session[:is_visitor] ? 'Visitor' : display
   end
 
-  # def logged_in_as_html  # REMOVE
-  #   if current_user
-  #     "Signed in as " + current_user.name
-  #   elsif session[:is_visitor]
-  #     'Visitor'
-  #   end
-  # end
+  def accounts_for_select
+    current_user.accounts.collect { |a| [ a.name, a.id ] }
+  end
+
+  def is_user_account_owner?(user, account)
+    user.relationships.any? do |r|
+      r.relationship_type == 'owner' &&
+      user.id == r.user_id &&
+      r.account_id == account.id
+     end
+  end
+
+  def is_user_logged_in?(user)
+    !current_user.nil? && user.name == current_user.name
+  end
 end

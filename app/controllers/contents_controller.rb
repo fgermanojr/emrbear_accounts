@@ -3,17 +3,21 @@ class ContentsController < ApplicationController
 
   def new
     flash.notice = 'POST CONTENT'
-    # TBD SHOULD BE permitted? here for visitor
     render_in_modal('contents/content_new')
   end
 
   def create
+    if contents_params[:account].nil?  # not a owner or member of any accounts
+                                       # so picker is empty
+      flash.notice = "No account selected: either create or become invited"
+      render template: '/layouts/access_denied' and return
+    end
     context = determine_context(contents_params[:account],
                                 contents_params[:content_user_id],
                                 nil)
 
     if role_manager.permitted?(:post_content, context)
-      # MOVE @r above if.
+      # MOVE @r above if. extend if to include @r, in nil, not owner or member of anything
       @relationship = Relationship.find_by(account_id: contents_params[:account],
                                            user_id: contents_params[:content_user_id])
 
@@ -42,11 +46,10 @@ class ContentsController < ApplicationController
       flash.notice = "Visitor's can't edit content"
       render template: '/layouts/access_denied' and return
     else
-      # We need to put this form out to get invitee account and then see if editable
+      # We need to put this form out to get invitee account
+      # and then see if editable in the edit section; we can't do
       @content = Content.find(params[:id])
-      if is_content_editable?(@content)
-        render_in_modal('contents/content_edit', args: @content)
-      end
+      render_in_modal('contents/content_edit', args: @content)
     end
   end
 
@@ -76,9 +79,9 @@ class ContentsController < ApplicationController
       @contents = []
     else
       if is_visitor? # TBD should this go thru role_manager
-        # Visitors cannot see private content.
+        # Visitors cannot see private content; the display subsystem doesn;t show it.
         # If they can;t see it they can;t edit it; so they can;t reach directly.
-        # The update checks are a further check against tampering
+        # Nevertheless, in update we check
         @contents = Content.where(account_id: account_id, private: false).order(created_at: :desc)
       else
         @contents = Content.where(account_id: account_id).order(created_at: :desc)
@@ -91,7 +94,8 @@ class ContentsController < ApplicationController
   def contents_params
     params.require(:content).permit(:content_text, :account, :user_name,
                                     :content_user_name, :content_user_id,
-                                    :content_private, :content_account_id)
+                                    :content_private, :content_account_id,
+                                    :account_name, :private)
   end
 
   def set_up_create_params(contents_params, relationship)
@@ -119,11 +123,12 @@ class ContentsController < ApplicationController
 
 
   def is_content_editable?(content)
-    user_id = content.relationship.user_id
-    account_id = content.relationship.account_id
+    # The current user may not be owner or member of account;
+    # in this case he cannot edit
+    user_id = contents_params[:content_user_id]
+    account_id = contents_params[:content_account_id]
 
     context = determine_context(account_id, user_id, is_content_owner?(content))
-
     if content.private
       permitted = role_manager.permitted?(:edit_private_content, context)
       if !permitted

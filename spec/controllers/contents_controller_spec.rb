@@ -2,11 +2,9 @@ require 'rails_helper'
 
 RSpec.describe ContentsController, type: :controller do
   render_views # This is optional
-  # establish_session is defined by me in rails_helper.rb CHECK
+  # By default, until we log in, we are a visitor.
 
-  # TBD By default, until we log in, we are a visitor.
-
-  # Add test for visitor create/new (no need to show form);
+  # Maybe. Add test for visitor create/new (no need to show form);
   #   so we can disallow like edit and not show form.
 
   # TBD what application_controller methods can be tested
@@ -23,12 +21,13 @@ RSpec.describe ContentsController, type: :controller do
     let(:contents_params) { { id: content.id, content: { content_text: 'public content', private: false } } }
 
     it "visitor can't post content" do
+      session[:account_id] = account.id   # Visitor has the ability to set account context
       post :create, xhr: true, params: contents_params
-      expect(flash[:notice]).to match(/not permitted/)
+      expect(flash[:notice]).to match(/No account selected/)
     end
 
     it "visitor can't edit content" do
-      get :edit, xhr: true, params: {id: content.id}
+      get :edit, xhr: true, params: {id: content.id}   # CHECK THIS PATH
       expect(flash[:notice]).to match(/can't edit/)
     end
 
@@ -150,10 +149,11 @@ RSpec.describe ContentsController, type: :controller do
         expect(flash[:notice]).to match(/Content updated/)
       end
 
-      it "user can't edit private content if not content owner" do # passes
+      it "user can't edit private content if not content owner" do # passes  FAILING
         establish_session(user_frank, false)
-        post :create, xhr: true, params: frank_edit_favorite_params
-        expect(flash[:notice]).to match(/not permitted/)
+        session[:account_id] = account_favorite.id
+        post :update, xhr: true, params: frank_edit_favorite_params
+        expect(flash[:notice]).to match(/Only owner's/)
       end
     end
 

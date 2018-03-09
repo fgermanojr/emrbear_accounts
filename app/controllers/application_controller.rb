@@ -61,6 +61,10 @@ class ApplicationController < ActionController::Base
     is_owner = is_member = is_visitor = is_user = nil
     if account_id.present? && user_id.present?
       @relationship = Relationship.find_by(account_id: account_id, user_id: user_id)
+puts 'determine_context'
+puts @relationship.inspect
+puts @relationship.try(:user_id)
+puts @relationship.try(:account_id)
       if @relationship
         if @relationship.relationship_type == 'owner'
           is_owner = true
@@ -71,6 +75,9 @@ class ApplicationController < ActionController::Base
         end
       end
     end
+puts 'is_owner is_member'
+puts is_owner.inspect, is_member.inspect
+puts '-----'
     is_user = true if session[:user_id]
     is_visitor = true if session[:user_id].nil?
     context = [is_visitor, is_user, is_member, is_owner, is_content_owner]

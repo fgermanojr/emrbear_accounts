@@ -97,6 +97,7 @@ class AuthenticationController < ApplicationController
   end
 
   def send_token_via_email(user, token)
+puts token
     from = 'fgermano@earthlink.net' # In production, this would be admin@emrbear.com, etc.
     to = [user.email]
     subject = 'Emrbear Accounts Login Token Validation'

@@ -28,6 +28,7 @@ class AccountsController < ApplicationController
     # TBD Should I pass this thru role manager
     if is_visitor?
       flash.notice = "Visitors cannot invite others"
+      render_in_modal('layouts/access_denied')
     else
       @user = User.find(session[:user_id])
       render_in_modal('accounts/acct_invite')

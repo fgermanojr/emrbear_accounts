@@ -5,6 +5,9 @@
 -# Sample ruby comment
 - @users.each do |user|
   = user.name
-  = '*' if !current_user.nil? && user.name == current_user.name
+  = '*,' if is_user_logged_in?(user)
+  - user.accounts.each do |account|
+    = account.name
+    = '(owner),' if is_user_account_owner?(user, account)
   %br
 

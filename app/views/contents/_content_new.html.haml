@@ -5,7 +5,7 @@
   = bootstrap_form_for('content', url: '/contents', method: 'post', remote: true) do |f|
     = f.hidden_field :content_user_id, id: "content_user_id", value: current_user.id
     = f.text_field :user_name, id: "content_user_name", label: "User Name:", readonly: true, value: current_user_display
-    = f.select :account, current_user.accounts.collect { |a| [ a.name, a.id ] }, id: "account_id", label: "Account:"
+    = f.select :account, accounts_for_select, id: "account_id", label: "Account:"
     = f.text_field :content_text, id: "content_text", label: "Content:"
     = f.form_group :content_private do
       = f.check_box :content_private, id: "content_private", label: "Private?"
