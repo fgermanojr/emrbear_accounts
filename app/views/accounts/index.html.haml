@@ -4,5 +4,5 @@
 %br
 - @accounts.each do |account|
   = account.name
-  = '*' if !current_account.nil? && account.name == current_account.name
+  = '(active)' if !current_account.nil? && account.name == current_account.name
   %br
