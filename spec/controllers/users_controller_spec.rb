@@ -51,8 +51,6 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe "test fixture relationship" do
-    # let!(:user_frank) { create(:user, :user_frank) }
-    # let!(:account_master) { create(:account, :account_master) }
     let!(:account_master_user_frank_owner) do
       create(:relationship, :account_master_user_frank_owner)
     end
