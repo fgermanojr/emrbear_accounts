@@ -1,3 +1,5 @@
 console.log('create.js.erb');
 $("#ajax-modal").modal('hide');
 $(".notice").html("<%= flash[:notice] %>");
+$("#navbar_current_user").html("<%= current_user_display %>");
+$("#current_user").html("<%= current_user_display %>");

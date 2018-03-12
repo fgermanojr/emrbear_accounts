@@ -7,12 +7,12 @@
     .notice
       = flash[:notice]
     #current_user
-      Current User:
-      = current_user_display
+      -# Current User:
+      -# = current_user_display
     #current_account
-      - if current_account
-        Current Account:
-        = current_account.name
+      -# - if current_account
+      -#   Current Account:
+      -#   = current_account.name
     %nav{class: "navbar navbar-toggleable-md navbar-light", style: "background-color: #00cc99;"}
       %button{class: "navbar-toggler navbar-toggler-right", type: "button", 'data-toggle': "collapse", 'data-target': "#navbarNavDropdown", 'aria-controls': "navbarNavDropdown", 'aria-expanded': "false", 'aria-label': "Toggle navigation"}
         %span{class: "navbar-toggler-icon"}
@@ -57,10 +57,14 @@
                 List
               %a{class: "dropdown-item", href: new_content_url, 'data-remote': true}
                 Post
+        %span{class: "navbar-text", id: "navbar_current_account"}
+          = session['account_name'].nil? ? '' : session['account_name']
         %span{class: "navbar-text"}
-          = session['current_user'].nil? ? '' : session['current_user']['name']
-        %span{class: "navbar-text"}
-          = is_admin? ? ' ADMIN': ''
+          = '-'
+        %span{class: "navbar-text", id: "navbar_current_user"}
+          = session['name'].nil? ? 'Visitor' : session['name']
+        %span{class: "navbar-text", id: "navbar_is_admin"}
+          = is_admin_display
         / Multi-Modal, from Wylan   FGJ pulled .fade after .modal below; fixes transitioning error
         #ajax-modal.modal{:tabindex => "-1", :role => 'dialog'}
           .modal-dialog{role: 'document'}

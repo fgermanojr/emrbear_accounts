@@ -2,3 +2,5 @@ $("#ajax-modal").modal('hide');
 $(".notice").html("<%= flash[:notice] %>");
 $("#full_page").html('');
 $("#full_page").replaceWith("<%= j(render template: 'contents/index') %>");
+$("#navbar_current_account").html("<%= current_account_display %>");
+

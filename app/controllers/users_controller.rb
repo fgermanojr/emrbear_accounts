@@ -12,6 +12,7 @@ class UsersController < ApplicationController
     if ! is_user_already_registered
       new_user = create_new_user
       establish_session(new_user, false)
+      @user = new_user
     end
     # Hits views/users/create.js.erb
   end

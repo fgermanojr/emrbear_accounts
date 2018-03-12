@@ -1,3 +1,5 @@
 console.log('update.js.erb');
 $("#ajax-modal").modal('hide');
 $(".notice").html("<%= flash[:notice] %>");
+$("#navbar_current_user").html("<%= current_user_display %>");
+$('#navbar_is_admin').html("<%= is_admin_display %>");

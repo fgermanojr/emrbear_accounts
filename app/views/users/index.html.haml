@@ -1,11 +1,9 @@
 %h3 Users List
 = link_to 'New User', '/login/new', remote: true
-%br
-%br
 -# Sample ruby comment
 - @users.each do |user|
+  %br
   = annotate_user(user)
   - user.accounts.each do |account|
-    = annotate_account(user, account)
-  %br
-
+    %ul
+      %li= annotate_account(user, account)

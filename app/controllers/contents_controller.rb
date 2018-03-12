@@ -3,7 +3,12 @@ class ContentsController < ApplicationController
 
   def new
     flash.notice = 'POST CONTENT'
-    render_in_modal('contents/content_new')
+    if is_visitor?
+      flash.notice = "No account selected: either create or become invited"
+      render template: '/layouts/access_denied' and return
+    else
+      render_in_modal('contents/content_new')
+    end
   end
 
   def create

@@ -13,6 +13,7 @@ class AccountsController < ApplicationController
                              relationship_type: 'owner',
                              account_id: account.id)
         session[:account_id] = account.id
+        session[:account_name] = account.name
         flash.notice = 'Relationship saved'
       else
         flash.notice = 'Relationship save failed'
@@ -28,6 +29,7 @@ class AccountsController < ApplicationController
     # TBD Should I pass this thru role manager
     if is_visitor?
       flash.notice = "Visitors cannot invite others"
+      render template: '/layouts/access_denied' and return
     else
       @user = User.find(session[:user_id])
       render_in_modal('accounts/acct_invite')
@@ -59,7 +61,6 @@ class AccountsController < ApplicationController
   end
 
   def selected
-    flash.notice = "selected account #{accounts_params[:account]}"
     session[:account_id] = accounts_params[:account]
     @contents = Content.where(account_id: accounts_params[:account])
                        .order(created_at: :desc)

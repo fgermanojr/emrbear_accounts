@@ -8,8 +8,17 @@ module ApplicationHelper
     session[:is_visitor] ? 'Visitor' : display
   end
 
+  def current_user_id
+    current_user.nil? ? 0 : current_user.id
+  end
+
   def accounts_for_select
-    current_user.accounts.collect { |a| [ a.name, a.id ] }
+    if current_user.nil?
+    # May not neeed this case now that I don't show for visitors
+      [['No Account Context', 0]]
+    else
+      current_user.accounts.collect { |a| [ a.name, a.id ] }
+    end
   end
 
   def is_user_account_owner?(user, account)
@@ -33,6 +42,10 @@ module ApplicationHelper
   def annotate_account(user, account)
     account_name = account.name
     account_name += '(owner)' if is_user_account_owner?(user, account)
-    account_name += ','
+    account_name
+  end
+
+  def is_admin_display
+    is_admin? ? '-isADMIN': ''
   end
 end
