@@ -14,7 +14,7 @@ RSpec.describe AccountsController, type: :controller do
       expect(response).to render_template(:index)
     end
 
-    it "renders index view" do
+    it "renders index view with User List" do
       get :index
       expect(response.body).to include("User")
     end

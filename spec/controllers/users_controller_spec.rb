@@ -25,7 +25,6 @@ RSpec.describe UsersController, type: :controller do
                            password: "foo", password_confirmation: "foo" } } }
     it "returns js fragment" do
       post :create, xhr: true, params: users_params
-      # response is create.js.erb
       expect(response.body).to include("create.js.erb")
     end
 

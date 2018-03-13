@@ -4,11 +4,6 @@ RSpec.describe ContentsController, type: :controller do
   render_views # This is optional
   # By default, until we log in, we are a visitor.
 
-  # Maybe. Add test for visitor create/new (no need to show form);
-  #   so we can disallow like edit and not show form.
-
-  # TBD what application_controller methods can be tested
-
   describe "visitor protected actions" do
     let!(:account_master_user_frank_owner) do
       create(:relationship, :account_master_user_frank_owner)
@@ -156,9 +151,5 @@ RSpec.describe ContentsController, type: :controller do
         expect(flash[:notice]).to match(/Only owner's/)
       end
     end
-
-    # issue of posting content to relationship_type owner vs member instance of relationship;
-    #   TBD what is being done in code now? What should it be? If owner post to owner, if member post to member?
-    # I think that should be the rule and work? I believe it is waht we are doing. check
   end
 end
